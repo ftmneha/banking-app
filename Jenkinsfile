@@ -9,18 +9,6 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t banking-app .'
-            }
-        }
-
-        stage('Load Image to Minikube') {
-            steps {
-                sh 'minikube image load banking-app'
-            }
-        }
-
         stage('Terraform Init') {
             steps {
                 dir('terraform') {
@@ -37,5 +25,11 @@ pipeline {
             }
         }
 
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+            }
+        }
     }
 }
